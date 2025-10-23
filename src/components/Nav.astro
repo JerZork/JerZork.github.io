@@ -6,102 +6,138 @@ import siteConfig from '../data/site-config';
 const navLinks = siteConfig.headerNavLinks || [];
 ---
 
-<nav class="min-h-10 pt-4 pb-12 relative sm:min-h-14 sm:pb-24 md:pt-8">
-    {
-        navLinks.length > 0 && (
-            <div class="w-full max-w-3xl mx-auto relative">
-                <button
-                    class="menu-toggle cursor-pointer w-8 h-8 -ml-1 flex items-center justify-center relative z-30 md:hidden"
-                    aria-label="Open Menu"
-                    aria-expanded="false"
-                    aria-controls="menu-items"
-                >
-                    <span class="menu-toggle-icon w-6 h-px relative bg-current" />
-                </button>
-                <ul
-                    id="menu-items"
-                    class="menu flex gap-6 max-md:flex-col max-md:gap-1 max-md:absolute max-md:-top-2.5 max-md:-left-2.5 max-md:max-w-64 max-md:px-3 max-md:pt-16 max-md:pb-10 max-md:z-20 max-md:bg-main max-md:border max-md:border-dashed max-md:border-main"
-                >
-                    {navLinks.map((link) => (
-                        <li class="py-1">
-                            <NavLink
-                                class="text-xl font-serif text-main hover:underline hover:underline-offset-2 hover:decoration-1 md:text-base"
-                                href={link.href}
-                            >
-                                {link.text}
-                            </NavLink>
-                        </li>
-                    ))}
-                </ul>
+<header class="fixed top-0 inset-x-0 z-40 bg-[#0a0a14]/80 backdrop-blur-lg border-b border-purple-500/20">
+    <nav class="relative max-w-7xl mx-auto px-4 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <!-- Logo -->
+            <div class="flex items-center">
+                {
+                    siteConfig.logo && siteConfig.logo?.src ? (
+                        <a href="/" class="flex items-center">
+                            <img src={siteConfig.logo.src} alt={siteConfig.logo.alt || ''} class="h-10" />
+                        </a>
+                    ) : (
+                        <a href="/" class="flex items-center gap-2">
+                            <div class="text-2xl font-bold">
+                                <span class="text-white">{'{ } '}</span>
+                                <span class="gradient-text">STACK.DEV</span>
+                            </div>
+                        </a>
+                    )
+                }
             </div>
-        )
-    }
-    <div class="absolute right-0 top-4 z-10 md:top-8">
-        <ThemeToggle />
-    </div>
-</nav>
 
-<style>
-    @reference "tailwindcss";
+            <!-- Desktop Navigation -->
+            <ul class="hidden lg:flex items-center gap-8">
+                {navLinks.map((link) => (
+                    <li>
+                        <NavLink 
+                            class="text-base text-white hover:text-cyan-400 transition-colors font-medium neon-hover" 
+                            href={link.href}
+                        >
+                            {link.text}
+                        </NavLink>
+                    </li>
+                ))}
+            </ul>
 
-    @media (max-width: 767px) {
-        .menu {
-            @apply invisible opacity-0;
-            width: calc(100% + 1.25rem);
-        }
-        .menu.is-visible {
-            @apply visible opacity-100;
-            transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
-        }
-        .menu-toggle-icon {
-            transition: width 0.1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
-        }
-        .menu-toggle.is-active .menu-toggle-icon {
-            @apply w-0;
-            transition: width 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .menu-toggle-icon:before,
-        .menu-toggle-icon:after {
-            @apply w-6 h-px absolute left-1/2 top-0 origin-center -translate-x-1/2 bg-current;
-            content: '';
-            transition:
-                rotate 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-                margin 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
-        }
-        .menu-toggle-icon:before {
-            @apply -mt-1.5;
-        }
-        .menu-toggle-icon:after {
-            @apply mt-1.5;
-        }
-        .menu-toggle.is-active .menu-toggle-icon:before,
-        .menu-toggle.is-active .menu-toggle-icon:after {
-            @apply mt-0;
-            transition:
-                margin 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0.1s,
-                rotate 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
-        }
-        .menu-toggle.is-active .menu-toggle-icon:before {
-            @apply rotate-45;
-        }
-        .menu-toggle.is-active .menu-toggle-icon:after {
-            @apply -rotate-45;
-        }
-    }
-</style>
+            <!-- Right side: Theme toggle + Contact button -->
+            <div class="hidden lg:flex items-center gap-4">
+                <a 
+                    href="/contact" 
+                    class="inline-flex items-center px-6 py-2 rounded-full btn-gradient font-semibold text-white neon-hover"
+                >
+                    Contact
+                </a>
+            </div>
+
+            <!-- Mobile menu button -->
+            <div class="lg:hidden flex items-center gap-2">
+                <button
+                    id="menu-toggle"
+                    class="p-2 text-white hover:text-cyan-400 transition-colors"
+                    aria-label="Toggle menu"
+                    aria-expanded="false"
+                >
+                    <svg class="w-6 h-6 menu-open" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path 
+                            stroke-linecap="round" 
+                            stroke-linejoin="round" 
+                            stroke-width="2" 
+                            d="M4 6h16M4 12h16M4 18h16"
+                        />
+                    </svg>
+                    <svg class="w-6 h-6 menu-close hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path 
+                            stroke-linecap="round" 
+                            stroke-linejoin="round" 
+                            stroke-width="2" 
+                            d="M6 18L18 6M6 6l12 12"
+                        />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div 
+            id="mobile-menu"
+            class="hidden lg:hidden border-t border-purple-500/20 py-4"
+        >
+            <ul class="flex flex-col gap-4">
+                {navLinks.map((link) => (
+                    <li>
+                        <NavLink 
+                            class="text-base text-white hover:text-cyan-400 transition-colors block py-2" 
+                            href={link.href}
+                        >
+                            {link.text}
+                        </NavLink>
+                    </li>
+                ))}
+                <li class="pt-2">
+                    <a 
+                        href="/contact" 
+                        class="inline-flex items-center px-6 py-2 rounded-full btn-gradient font-semibold text-white w-full justify-center"
+                    >
+                        Contact
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
 
 <script>
-    function menuToggle() {
-        const menu = document.querySelector('.menu');
-        const menuToggleBtn = document.querySelector('.menu-toggle');
-        menuToggleBtn?.addEventListener('click', () => {
-            const isMenuExpanded = menuToggleBtn.getAttribute('aria-expanded') === 'true';
-            menuToggleBtn.classList.toggle('is-active');
-            menuToggleBtn.setAttribute('aria-expanded', isMenuExpanded ? 'false' : 'true');
-            menuToggleBtn.setAttribute('aria-label', isMenuExpanded ? 'Open Menu' : 'Close Menu');
-            menu?.classList.toggle('is-visible');
+    function initMobileMenu() {
+        const button = document.getElementById('menu-toggle');
+        const menu = document.getElementById('mobile-menu');
+        const menuOpen = button?.querySelector('.menu-open');
+        const menuClose = button?.querySelector('.menu-close');
+        
+        button?.addEventListener('click', () => {
+            const isOpen = !menu?.classList.contains('hidden');
+            
+            if (isOpen) {
+                menu?.classList.add('hidden');
+                menuOpen?.classList.remove('hidden');
+                menuClose?.classList.add('hidden');
+                button.setAttribute('aria-expanded', 'false');
+            } else {
+                menu?.classList.remove('hidden');
+                menuOpen?.classList.add('hidden');
+                menuClose?.classList.remove('hidden');
+                button.setAttribute('aria-expanded', 'true');
+            }
         });
     }
-    menuToggle();
-    document.addEventListener('astro:after-swap', menuToggle);
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMobileMenu);
+    } else {
+        initMobileMenu();
+    }
+
+    document.addEventListener('astro:page-load', initMobileMenu);
 </script>
+

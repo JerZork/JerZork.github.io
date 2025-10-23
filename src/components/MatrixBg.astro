@@ -1,0 +1,53 @@
+---
+// Matrix falling numbers animation for hero background
+---
+
+<div id="matrixBg" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+
+<script>
+    function initMatrix() {
+        const matrixBg = document.getElementById('matrixBg');
+        if (!matrixBg) return;
+
+        const chars = '0123456789ABCDEF';
+        const interval = 200;
+        const spawnDelay = 50;
+        const initialCount = 30;
+
+        function createNumber() {
+            const num = document.createElement('div');
+            num.className = 'matrix-number';
+            num.textContent = chars[Math.floor(Math.random() * chars.length)];
+            num.style.left = Math.random() * 100 + '%';
+            num.style.top = Math.random() * 100 + '%';
+            num.style.animationDelay = Math.random() * 1.5 + 's';
+            num.style.animationDuration = Math.random() * 1 + 1.5 + 's';
+            
+            if (matrixBg) {
+                matrixBg.appendChild(num);
+            }
+            
+            setTimeout(() => {
+                if (num.parentNode) {
+                    num.parentNode.removeChild(num);
+                }
+            }, 2500);
+        }
+
+        // Create initial numbers
+        for (let i = 0; i < initialCount; i++) {
+            setTimeout(createNumber, i * spawnDelay);
+        }
+
+        // Continue creating numbers
+        setInterval(createNumber, interval);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMatrix);
+    } else {
+        initMatrix();
+    }
+
+    document.addEventListener('astro:page-load', initMatrix);
+</script>

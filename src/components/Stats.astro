@@ -1,0 +1,71 @@
+---
+// Stats section with animated counters
+export interface Props {
+    class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const stats = [
+    { number: 5, suffix: '+', label: 'Years Experience' },
+    { number: 150, suffix: '+', label: 'Projects Completed' },
+    { number: 95, suffix: '%', label: 'Client Satisfaction' },
+    { number: 50, suffix: '+', label: 'Happy Clients' }
+];
+---
+
+<section class={`py-20 relative overflow-hidden ${className || ''}`}>
+    <div class="max-w-7xl mx-auto px-4 lg:px-8">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            {stats.map((stat) => (
+                <div class="text-center">
+                    <div class="text-4xl lg:text-5xl font-bold gradient-text mb-2">
+                        <span class="counter" data-target={stat.number}>0</span>{stat.suffix}
+                    </div>
+                    <div class="text-gray-400 text-sm lg:text-base">{stat.label}</div>
+                </div>
+            ))}
+        </div>
+    </div>
+</section>
+
+<script>
+    function animateCounters() {
+        const counters = document.querySelectorAll('.counter');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counter = entry.target as HTMLElement;
+                    const target = parseInt(counter.getAttribute('data-target') || '0');
+                    let current = 0;
+                    const increment = target / 50;
+                    const duration = 2000;
+                    const stepTime = duration / 50;
+
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            counter.textContent = target.toString();
+                            clearInterval(timer);
+                        } else {
+                            counter.textContent = Math.floor(current).toString();
+                        }
+                    }, stepTime);
+
+                    observer.unobserve(counter);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        counters.forEach(counter => observer.observe(counter));
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', animateCounters);
+    } else {
+        animateCounters();
+    }
+
+    document.addEventListener('astro:page-load', animateCounters);
+</script>

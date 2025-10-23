@@ -1,0 +1,56 @@
+---
+// Custom cursor with neon effect like Stack.Dev
+---
+
+<div class="custom-cursor opacity-0" id="cursor"></div>
+
+<script>
+    function initCursor() {
+        const cursor = document.getElementById('cursor');
+        if (!cursor) return;
+
+        cursor.style.opacity = '0';
+        cursor.style.transition = cursor.style.transition || 'opacity .25s ease';
+
+        const hoverElements = document.querySelectorAll('.neon-hover, a, button');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+        const speed = 0.5;
+        const offsetX = 20;
+        const offsetY = 70;
+        let isVisible = false;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX - offsetX;
+            mouseY = e.clientY - offsetY;
+            if (!isVisible) {
+                isVisible = true;
+                cursor.style.opacity = '1';
+            }
+        }, { passive: true });
+
+        function animate() {
+            cursorX += (mouseX - cursorX) * speed;
+            cursorY += (mouseY - cursorY) * speed;
+            
+            if (cursor) {
+                cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0)`;
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        hoverElements.forEach((el) => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCursor);
+    } else {
+        initCursor();
+    }
+
+    document.addEventListener('astro:page-load', initCursor);
+</script>
